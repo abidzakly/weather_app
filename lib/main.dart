@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:weather_app/network/models/weather_model.dart';
+import 'package:weather_app/network/models/weather/weather_model.dart';
 import 'package:geolocator/geolocator.dart';
 
 
@@ -86,7 +85,6 @@ class _MyHomePageState extends State<MyHomePage> {
     bool serviceEnabled;
     LocationPermission permission;
 
-
     // Test if location services are enabled.
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
@@ -160,15 +158,11 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: RefreshIndicator(
           onRefresh: _handleRefresh,
-          child: FutureBuilder(future: weatherFuture, builder: builder)),
+          child: const ColoredBox(color: Colors.blue)),
       floatingActionButton: FloatingActionButton(
         onPressed: _incrementCounter,
         tooltip: 'Increment',
-        child: CachedNetworkImage(
-          imageUrl: 'https://openweathermap.org/img/wn/01d.png',
-          placeholder: (context, url) => const CircularProgressIndicator(),
-          errorWidget: (context, url, error) => const Icon(Icons.error),
-        ),
+        child: const SizedBox(height: 20,),
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
