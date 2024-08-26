@@ -7,7 +7,7 @@ part of 'sys.dart';
 // **************************************************************************
 
 Sys _$SysFromJson(Map<String, dynamic> json) => Sys(
-      country: json['country'] as String,
+      country: json['country'] as String? ?? "Unidentified",
     );
 
 Map<String, dynamic> _$SysToJson(Sys instance) => <String, dynamic>{

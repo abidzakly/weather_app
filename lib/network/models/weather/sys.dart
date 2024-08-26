@@ -6,7 +6,7 @@ part 'sys.g.dart';
 class Sys {
   final String country;
 
-  Sys({
+  const Sys({
     this.country = "Unidentified",
   });
 

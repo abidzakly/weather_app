@@ -7,8 +7,8 @@ part of 'main.dart';
 // **************************************************************************
 
 Main _$MainFromJson(Map<String, dynamic> json) => Main(
-      temp: (json['temp'] as num).toDouble(),
-      humidity: (json['humidity'] as num).toInt(),
+      temp: (json['temp'] as num?)?.toDouble() ?? 0.0,
+      humidity: (json['humidity'] as num?)?.toInt() ?? 0,
     );
 
 Map<String, dynamic> _$MainToJson(Main instance) => <String, dynamic>{

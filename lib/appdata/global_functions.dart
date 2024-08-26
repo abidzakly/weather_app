@@ -1,19 +1,51 @@
 import 'dart:ui';
-
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
-double getScreenHeight(){
-  return PlatformDispatcher.instance.views.first.physicalSize.height / PlatformDispatcher.instance.views.first.devicePixelRatio;
+double getScreenHeight() {
+  return PlatformDispatcher.instance.views.first.physicalSize.height /
+      PlatformDispatcher.instance.views.first.devicePixelRatio;
 }
 
-double getScreenWidth(){
-  return PlatformDispatcher.instance.views.first.physicalSize.width / PlatformDispatcher.instance.views.first.devicePixelRatio;
+double getScreenWidth() {
+  return PlatformDispatcher.instance.views.first.physicalSize.width /
+      PlatformDispatcher.instance.views.first.devicePixelRatio;
 }
 
-void showSnackBar(BuildContext context, String text){
-  if(context.mounted){
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(text))
-    );
+void showSnackBar(BuildContext context, String text) {
+  if (context.mounted) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(text)));
   }
+}
+
+String dtToReadable(int dt) {
+  DateTime date = DateTime.fromMillisecondsSinceEpoch(dt * 1000, isUtc: true);
+  String formattedDate = DateFormat('EEEE, dd MMMM').format(date.toLocal());
+  return formattedDate;
+}
+
+String formatDate(String dateString) {
+  if (dateString.isNotEmpty) {
+    DateTime date = DateTime.parse(dateString);
+    // Format the date to 'dd MMM', e.g., '26 Aug'
+    String formattedDate = DateFormat('dd MMM').format(date);
+    return formattedDate;
+  } else {
+    return "";
+  }
+}
+
+void pushToNextScreen(BuildContext context, Widget nextScreen) {
+  Navigator.push(
+    context,
+    MaterialPageRoute(builder: (context) => nextScreen),
+  );
+}
+
+void pushAndRemoveToNextScreen(BuildContext context, Widget nextScreen) {
+  Navigator.pushAndRemoveUntil(
+    context,
+    MaterialPageRoute(builder: (context) => nextScreen),
+    (route) => false,
+  );
 }
