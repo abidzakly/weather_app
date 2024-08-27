@@ -1,36 +1,61 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:weather_app/appdata/global_functions.dart';
-import 'package:weather_app/appdata/global_data.dart';
-import 'package:weather_app/network/models/forecasts/forecast.dart';
 
+import '../../../appdata/app_assets.dart';
 import '../../../appdata/app_colors.dart';
+import '../../../appdata/global_functions.dart';
 
 class HomeForecastCard extends StatelessWidget {
-  const HomeForecastCard({super.key, this.forecastsData});
+  const HomeForecastCard(
+      {super.key,
+      required this.temp,
+      required this.weatherIcon,
+      required this.date});
 
-  final List<Forecast>? forecastsData;
+  final String temp;
+  final String weatherIcon;
+  final String date;
 
   @override
   Widget build(BuildContext context) {
-    print(forecastsData);
-    return Expanded(
-        child: forecastsData != null
-            ? ListView.builder(
-                shrinkWrap: true,
-                scrollDirection: Axis.horizontal,
-                itemCount: forecastsData?.length,
-                itemBuilder: (context, index) {
-                  Text(
-                    forecastsData?[index].date ?? "TEst",
-                    style: const TextStyle(color: AppColors.secondaryColor),
-                  );
-                  return null;
-                },
-              )
-            : const Text(
-                "Data empty",
-                style: TextStyle(color: AppColors.secondaryColor),
-              ));
+    return Container(
+        width: 120,
+        padding: const EdgeInsets.only(bottom: 28),
+        child: Card(
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15.0),
+              side: const BorderSide(
+                  color: AppColors.secondaryColor, width: 2.5)),
+          color: AppColors.primaryColor,
+          child: Center(
+            widthFactor: 2,
+            heightFactor: 2.0,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  temp,
+                  style: const TextStyle(fontSize: 20),
+                ),
+                weatherIcon != ""
+                    ? Image.network(
+                        getImgUrl(weatherIcon, ""),
+                        height: 52,
+                        width: 52,
+                      )
+                    : Image.asset(
+                        AppAssets.brokenImageIco,
+                        width: 52,
+                        height: 52,
+                      ),
+                Text(
+                  date,
+                  style: const TextStyle(
+                      color: AppColors.secondaryColor, fontSize: 18),
+                )
+              ],
+            ),
+          ),
+        ));
   }
 }

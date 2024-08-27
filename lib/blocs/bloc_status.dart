@@ -1,22 +1,20 @@
-abstract class AppSubmissionStatus {
-  const AppSubmissionStatus();
+abstract class AppStatus {
+  const AppStatus();
 }
 
-class InitialStatus extends AppSubmissionStatus {
+class InitialStatus extends AppStatus {
   const InitialStatus();
 }
 
-class FormSubmitting extends AppSubmissionStatus {}
+class IsLoading extends AppStatus {}
 
-class SubmissionLoading extends AppSubmissionStatus {}
-
-class SubmissionSuccess extends AppSubmissionStatus {
-  const SubmissionSuccess();
+class IsSuccess extends AppStatus {
+  const IsSuccess();
 }
 
-class SubmissionFailed extends AppSubmissionStatus {
+class IsFailed extends AppStatus {
   final Object? exception;
   final String? message;
 
-  SubmissionFailed({this.exception, this.message});
+  IsFailed({this.exception, this.message});
 }

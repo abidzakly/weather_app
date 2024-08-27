@@ -1,22 +1,23 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:weather_app/appdata/global_data.dart';
 import 'package:weather_app/appdata/global_functions.dart';
+import 'package:weather_app/appdata/global_variables.dart';
+import 'package:weather_app/appdata/global_widget.dart';
 import 'package:weather_app/blocs/bloc_status.dart';
 import 'package:weather_app/blocs/forecast/forecast_bloc.dart';
 import 'package:weather_app/blocs/forecast/forecast_event.dart';
 import 'package:weather_app/blocs/forecast/forecast_state.dart';
-import 'package:weather_app/network/models/forecasts/day_averages.dart';
-import 'package:weather_app/network/models/forecasts/forecast.dart';
-import 'package:weather_app/network/models/forecasts/forecast_model.dart';
+import 'package:weather_app/blocs/home/home_bloc.dart';
+import 'package:weather_app/blocs/home/home_event.dart';
 import 'package:weather_app/network/weather_repository.dart';
+import 'package:weather_app/views/forecast/widgets/forecast_card_list.dart';
 
+import '../../appdata/app_assets.dart';
 import '../../appdata/app_colors.dart';
 
 class ForecastsScreen extends StatelessWidget {
-  const ForecastsScreen(
-      {super.key, required this.latitude, required this.longitude});
+  const ForecastsScreen({super.key, required this.latitude, required this.longitude});
 
   final double latitude;
   final double longitude;
@@ -24,89 +25,84 @@ class ForecastsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: BlocProvider(
-            create: (context) => ForecastBloc(
-                weatherRepository: WeatherRepository(),
-                latitude: latitude,
-                longitude: longitude),
-            child: BlocBuilder<ForecastBloc, ForecastState>(
-                builder: (context, state) {
-              print("ForecastScreen, Status: ${state.appStatus}");
+        backgroundColor: AppColors.primaryColor,
+        body:
+            BlocBuilder<ForecastBloc, ForecastState>(builder: (context, state) {
+          if (state.appStatus == const InitialStatus()) {
+            context.read<ForecastBloc>().add(ForecastInitialEvent(latitude: latitude, longitude: longitude));
+          }
 
-              if (state.appStatus == const InitialStatus()) {
-                context.read<ForecastBloc>().add(ForecastInitialEvent());
-              }
-              return SafeArea(
-                  minimum:
-                      const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                  child: state.appStatus is SubmissionLoading
-                      ? const Center(
-                          child: CircularProgressIndicator(
-                          color: AppColors.secondaryColor,
-                        ))
-                      : Column(
-                          children: [
-                            Padding(padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 18 ), child:
-                              Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    const Text("Prediction"),
-                                    TextButton(
-                                        onPressed: () async => context
-                                            .read<ForecastBloc>()
-                                            .add(ForecastTypeChangedEvent(
-                                                isDaytime: !state.isDayTime)),
-                                        child: Text(state.isDayTime
-                                            ? "DayTime"
-                                            : "NightTime")),
-                                  ])),
-                              Expanded(
-                                  child: ListView.builder(
-                                      itemCount: state
-                                          .forecastsModel?.forecasts.length,
-                                      itemBuilder: (context, index) {
-                                        final forecastData = state
-                                            .forecastsModel?.forecasts[index];
-                                        return Card(
-                                          child: Padding(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      vertical: 16,
-                                                      horizontal: 16),
-                                              child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                children: [
-                                                  Text(formatDate(
-                                                      forecastData?.date ??
-                                                          "")),
-                                                  Text(
-                                                      "${forecastData?.day_averages.temp.toStringAsFixed(2)}°"),
-                                                  Row(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .center,
-                                                    children: [
-                                                      Text(forecastData
-                                                              ?.day_averages
-                                                              .weather_main ??
-                                                          ""),
-                                                      forecastData?.day_averages
-                                                                  .weather_icon !=
-                                                              null
-                                                          ? Image.network(
-                                                              "${globalData.imgBaseUrl}${forecastData?.day_averages.weather_icon}.png")
-                                                          : const SizedBox(
-                                                              height: 0),
-                                                    ],
-                                                  )
-                                                ],
-                                              )),
-                                        );
-                                      }))
-                            ]));
-            })));
+          return RefreshIndicator(
+            backgroundColor: AppColors.secondaryColor,
+            color: AppColors.primaryColor,
+            onRefresh: () async {
+              context.read<ForecastBloc>().add(ForecastRefreshedEvent());
+            },
+            child: SafeArea(
+                minimum:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                child: state.appStatus is IsLoading
+                    ? const CustomLoading()
+                    : state.appStatus is IsSuccess
+                        ? Column(children: [
+                            Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 12, vertical: 18),
+                                child: Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      const Text(
+                                        "Prediction",
+                                        style: TextStyle(
+                                            fontSize: 26,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      TextButton(
+                                          onPressed: () async {
+                                            context.read<ForecastBloc>().add(
+                                                ForecastTypeChangedEvent(
+                                                    isDaytime:
+                                                        !state.isDayTime));
+                                            context.read<HomeBloc>().add(
+                                                HomeIsDayTimeChangedEvent(
+                                                    isDaytime:
+                                                        !state.isDayTime));
+                                          },
+                                          child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.start,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.center,
+                                              children: [
+                                                Text(
+                                                  state.isDayTime
+                                                      ? "Day Time"
+                                                      : "Night Time",
+                                                  style: const TextStyle(
+                                                      color: AppColors
+                                                          .complementaryColor),
+                                                ),
+                                                const SizedBox(
+                                                  width: 8,
+                                                ),
+                                                Image.asset(
+                                                  state.isDayTime
+                                                      ? AppAssets.dayTimeIco
+                                                      : AppAssets.nightTimeIco,
+                                                  height: 26,
+                                                  width: 26,
+                                                )
+                                              ])),
+                                    ])),
+                            ForecastCardList(
+                                forecastList: state.forecastsModel!.forecasts,
+                                isDayTime: state.isDayTime)
+                          ])
+                        : const OnErrorWidget()),
+          );
+        }));
   }
 }

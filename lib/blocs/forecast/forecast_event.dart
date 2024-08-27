@@ -5,8 +5,13 @@ abstract class ForecastEvent extends Equatable {
 }
 
 class ForecastInitialEvent extends ForecastEvent {
+  const ForecastInitialEvent({required this.latitude, required this.longitude});
+
+  final double latitude;
+  final double longitude;
+
   @override
-  List<Object> get props => [];
+  List<Object> get props => [latitude, longitude];
 }
 
 class ForecastRefreshedEvent extends ForecastEvent {
@@ -15,7 +20,7 @@ class ForecastRefreshedEvent extends ForecastEvent {
 }
 
 class ForecastTypeChangedEvent extends ForecastEvent {
-  ForecastTypeChangedEvent({this.isDaytime});
+  const ForecastTypeChangedEvent({this.isDaytime});
 
   final bool? isDaytime;
 

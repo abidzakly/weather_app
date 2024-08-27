@@ -14,7 +14,7 @@ class ForecastState extends Equatable {
   final ForecastModel? forecastsModel;
   final double latitude;
   final double longitude;
-  final AppSubmissionStatus appStatus;
+  final AppStatus appStatus;
   final String currentDate;
   final bool isDayTime;
 
@@ -25,7 +25,7 @@ class ForecastState extends Equatable {
       double? longitude,
       String? currentDate,
       bool? isDayTime,
-      AppSubmissionStatus? appStatus}) {
+      AppStatus? appStatus}) {
     return ForecastState(
         forecastsModel: forecastsModel ?? this.forecastsModel,
         latitude: latitude ?? this.latitude,
@@ -36,7 +36,6 @@ class ForecastState extends Equatable {
   }
 
   @override
-  // TODO: implement props
   List<Object?> get props =>
       [forecastsModel, latitude, longitude, currentDate, appStatus, isDayTime];
 }

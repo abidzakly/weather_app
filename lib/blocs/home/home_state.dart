@@ -10,14 +10,16 @@ class HomeState extends Equatable {
       this.latitude = 0.0,
       this.longitude = 0.0,
       this.currentDate = "",
+      this.isDayTime = true,
       this.appStatus = const InitialStatus()});
 
   final WeatherModel? weatherModel;
   final ForecastModel? forecastsModel;
   final double latitude;
   final double longitude;
-  final AppSubmissionStatus appStatus;
+  final AppStatus appStatus;
   final String currentDate;
+  final bool isDayTime;
 
   HomeState copyWith(
       {WeatherModel? weatherModel,
@@ -25,24 +27,26 @@ class HomeState extends Equatable {
       double? latitude,
       double? longitude,
       String? currentDate,
-      AppSubmissionStatus? appStatus}) {
+      bool? isDayTime,
+      AppStatus? appStatus}) {
     return HomeState(
         weatherModel: weatherModel ?? this.weatherModel,
         forecastsModel: forecastsModel ?? this.forecastsModel,
         latitude: latitude ?? this.latitude,
         longitude: longitude ?? this.longitude,
         currentDate: currentDate ?? this.currentDate,
+        isDayTime: isDayTime ?? this.isDayTime,
         appStatus: appStatus ?? this.appStatus);
   }
 
   @override
-  // TODO: implement props
   List<Object?> get props => [
         weatherModel,
         forecastsModel,
         latitude,
         longitude,
         currentDate,
+        isDayTime,
         appStatus
       ];
 }

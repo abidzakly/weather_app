@@ -1,18 +1,29 @@
-// import 'package:flutter/cupertino.dart';
-//
-// class CustomText extends StatelessWidget {
-//   const CustomText({super.key, required this.text, required this.style});
-//
-//   final String text;
-//   final Color color;
-//   final double? fontSize;
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     // TODO: implement build
-//     return Text(
-//       text,
-//       style: TextStyle(color: color, fontSize: fontSize ?? 16),
-//     );
-//   }
-// }
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+
+import 'app_colors.dart';
+
+class CustomLoading extends StatelessWidget {
+  const CustomLoading({super.key, this.color = AppColors.secondaryColor});
+
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+        child: CircularProgressIndicator(
+      color: color,
+    ));
+  }
+}
+
+class OnErrorWidget extends StatelessWidget {
+  const OnErrorWidget({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Center(
+      child: Text("Unknown Error."),
+    );
+  }
+}

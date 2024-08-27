@@ -1,54 +1,59 @@
+import 'dart:async';
+
 import 'package:bloc/bloc.dart';
 import 'package:weather_app/blocs/bloc_status.dart';
 import 'package:weather_app/network/models/forecasts/forecast_model.dart';
 import 'package:weather_app/network/models/weather/weather_model.dart';
 import 'package:geolocator/geolocator.dart';
 import '../../network/weather_repository.dart';
+import '../forecast/forecast_bloc.dart';
 import 'home_event.dart';
 import 'home_state.dart';
 import 'package:weather_app/appdata/global_functions.dart';
 
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
-  final WeatherRepository? weatherRepo;
+  final WeatherRepository? weatherRepository;
 
-  HomeBloc(this.weatherRepo) : super(const HomeState()) {
-    on<HomeEvent>(_onStartOrRefreshed);
+  HomeBloc({this.weatherRepository}) : super(const HomeState()) {
+    on<HomeEvent>((event, emit) async {
+      await mapEventToState(event, emit);
+    });
   }
 
-  _onStartOrRefreshed(HomeEvent event, Emitter<HomeState> emit) async {
-    if (event is HomeGetWeather || event is HomeRefreshed) {
-      emit(state.copyWith(appStatus: SubmissionLoading()));
+  Future mapEventToState(HomeEvent event, Emitter<HomeState> emit) async {
+    if (event is HomeGetWeatherEvent || event is HomeRefreshedEvent) {
+      emit(state.copyWith(appStatus: IsLoading()));
       try {
-        Position? pos = await weatherRepo?.getCurrentPosition();
-
-        print("test 1 : ${pos?.latitude ?? "0 lat"}");
-        print("test 2 : ${pos?.longitude ?? "0 long"}");
+        Position? pos = await weatherRepository?.getCurrentPosition();
+        print("latlong in HomeBloc: ${pos!.latitude}, ${pos.longitude}");
 
         emit(state.copyWith(
             latitude: pos!.latitude,
             longitude: pos.longitude,
-            appStatus: SubmissionLoading()));
+            appStatus: IsLoading()));
 
         WeatherModel? weatherData =
-        await weatherRepo?.getCurrentLocationWeather(
-            latitude: state.latitude.toString(),
-            longitude: state.longitude.toString());
+            await weatherRepository?.getCurrentLocationWeather(
+                latitude: state.latitude.toString(),
+                longitude: state.longitude.toString());
 
-        ForecastModel? forecastsModel = await weatherRepo
-            ?.getFiveDaysForecasts(latitude: state.latitude.toString(),
-            longitude: state.longitude.toString());
-
-        print("test 3 : ${weatherData?.weather[0].icon ?? "no img"}");
+        ForecastModel? forecastsModel =
+            await weatherRepository?.getFiveDaysForecasts(
+                latitude: state.latitude.toString(),
+                longitude: state.longitude.toString());
 
         emit(state.copyWith(
             weatherModel: weatherData,
             forecastsModel: forecastsModel,
             currentDate: dtToReadable(weatherData!.dt),
-            appStatus: const SubmissionSuccess()));
-
+            appStatus: const IsSuccess()));
       } catch (e) {
-        emit(state.copyWith(appStatus: SubmissionFailed(exception: e)));
+        emit(state.copyWith(appStatus: IsFailed(exception: e)));
       }
+    }
+
+    if (event is HomeIsDayTimeChangedEvent) {
+      emit(state.copyWith(isDayTime: event.isDaytime));
     }
   }
 }

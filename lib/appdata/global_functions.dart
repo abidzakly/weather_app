@@ -1,6 +1,12 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:weather_app/appdata/global_variables.dart';
+
+String getImgUrl(String imgId, String? size) {
+  return ("${globalVariable.imgBaseUrl}$imgId$size.png");
+}
+
 
 double getScreenHeight() {
   return PlatformDispatcher.instance.views.first.physicalSize.height /
@@ -22,17 +28,6 @@ String dtToReadable(int dt) {
   DateTime date = DateTime.fromMillisecondsSinceEpoch(dt * 1000, isUtc: true);
   String formattedDate = DateFormat('EEEE, dd MMMM').format(date.toLocal());
   return formattedDate;
-}
-
-String formatDate(String dateString) {
-  if (dateString.isNotEmpty) {
-    DateTime date = DateTime.parse(dateString);
-    // Format the date to 'dd MMM', e.g., '26 Aug'
-    String formattedDate = DateFormat('dd MMM').format(date);
-    return formattedDate;
-  } else {
-    return "";
-  }
 }
 
 void pushToNextScreen(BuildContext context, Widget nextScreen) {
