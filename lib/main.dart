@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:weather_app/blocs/forecast/forecast_bloc.dart';
-import 'package:weather_app/blocs/home/home_bloc.dart';
+import 'package:weather_app/views/forecast/blocs/forecast_bloc.dart';
+import 'package:weather_app/views/home/blocs/home_bloc.dart';
 import 'package:weather_app/network/weather_repository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:weather_app/views/home/home_screen.dart';

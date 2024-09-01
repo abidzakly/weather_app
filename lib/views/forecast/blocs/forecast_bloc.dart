@@ -1,12 +1,11 @@
 import 'package:bloc/bloc.dart';
-import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:weather_app/blocs/bloc_status.dart';
-import 'package:weather_app/blocs/forecast/forecast_event.dart';
-import 'package:weather_app/blocs/forecast/forecast_state.dart';
-import 'package:weather_app/blocs/home/home_bloc.dart';
+import 'package:weather_app/views/forecast/blocs/forecast_event.dart';
 import 'package:weather_app/network/models/forecasts/forecast_model.dart';
 import 'package:weather_app/network/weather_repository.dart';
+
+import 'forecast_state.dart';
 
 class ForecastBloc extends Bloc<ForecastEvent, ForecastState> {
   final WeatherRepository? weatherRepository;

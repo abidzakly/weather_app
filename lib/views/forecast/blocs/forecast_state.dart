@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:weather_app/network/models/forecasts/forecast_model.dart';
-import '../bloc_status.dart';
+
+import '../../../blocs/bloc_status.dart';
 
 class ForecastState extends Equatable {
   const ForecastState(

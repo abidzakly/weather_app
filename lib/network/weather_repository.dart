@@ -39,7 +39,7 @@ class WeatherRepository {
 
       // Send the data to the second API
       final response = await _service.dio.post(
-        "https://8149-139-228-117-86.ngrok-free.app/weather/averages",
+        "https://7b11-139-228-117-86.ngrok-free.app/weather/averages",
         data: dataToSend,
         options: Options(
           headers: {"Content-Type": "application/json"},

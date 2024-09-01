@@ -1,20 +1,17 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:weather_app/appdata/global_functions.dart';
-import 'package:weather_app/appdata/global_variables.dart';
 import 'package:weather_app/appdata/global_widget.dart';
 import 'package:weather_app/blocs/bloc_status.dart';
-import 'package:weather_app/blocs/forecast/forecast_bloc.dart';
-import 'package:weather_app/blocs/forecast/forecast_event.dart';
-import 'package:weather_app/blocs/forecast/forecast_state.dart';
-import 'package:weather_app/blocs/home/home_bloc.dart';
-import 'package:weather_app/blocs/home/home_event.dart';
-import 'package:weather_app/network/weather_repository.dart';
+import 'package:weather_app/views/forecast/blocs/forecast_bloc.dart';
+import 'package:weather_app/views/forecast/blocs/forecast_event.dart';
+import 'package:weather_app/views/home/blocs/home_bloc.dart';
 import 'package:weather_app/views/forecast/widgets/forecast_card_list.dart';
 
 import '../../appdata/app_assets.dart';
 import '../../appdata/app_colors.dart';
+import '../home/blocs/home_event.dart';
+import 'blocs/forecast_state.dart';
 
 class ForecastsScreen extends StatelessWidget {
   const ForecastsScreen({super.key, required this.latitude, required this.longitude});
