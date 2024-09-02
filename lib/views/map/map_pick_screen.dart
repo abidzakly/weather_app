@@ -42,6 +42,9 @@ class _MapPickScreenState extends State<MapPickScreen> {
     Position? pos = await repo.getCurrentPosition();
     globalVariable.latitude = pos.latitude;
     globalVariable.longitude = pos.longitude;
+
+    globalVariable.myLocationLat = pos.latitude;
+    globalVariable.myLocationLong = pos.longitude;
     setState(() {
       longitudeTextController.text = globalVariable.longitude.toString();
       latitudeTextController.text = globalVariable.latitude.toString();
@@ -95,7 +98,7 @@ class _MapPickScreenState extends State<MapPickScreen> {
                                           255, 255, 255, 255),
                                       filled: true,
                                       // border: OutlineInputBorder(),
-                                      hintText: 'Enter Tag e.g. Home',
+                                      hintText: 'Enter Tag: e.g. `Home`',
                                     ))
                               ],
                             ),
@@ -141,9 +144,187 @@ class _MapPickScreenState extends State<MapPickScreen> {
                                             weatherModel: weatherData!));
                                         db.updateDatabase();
                                         Navigator.pop(context);
-                                        setState(() {
-                                          showLoading();
-                                        });
+                                        // setState(() {
+                                        //   showLoading();
+                                        // });
+                                      } else {
+                                        showSnackBar(
+                                            context, 'Text cannot be empty');
+                                      }
+                                    },
+                                    setBorderRadius: true),
+                              ],
+                            ),
+                            SizedBox(height: getScreenHeight() * 0.015),
+                          ]),
+                        ),
+                      )));
+            });
+          });
+    }
+  }
+
+  void showCoordinatesDialog() {
+    final formKey = GlobalKey<FormState>();
+    if (mounted) {
+      // TextEditingController textController = TextEditingController();
+      showDialog(
+          context: context,
+          builder: (dialogContext) {
+            return StatefulBuilder(builder: (context, setState) {
+              return Dialog(
+                  backgroundColor: AppColors.primaryColor,
+                  child: Form(
+                      key: formKey,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 30, vertical: 24),
+                        child: SingleChildScrollView(
+                          child:
+                              Column(mainAxisSize: MainAxisSize.min, children: [
+                            SizedBox(height: getScreenHeight() * 0.015),
+                            const Text('Edit Coordinates',
+                                style: TextStyle(
+                                    fontSize: 19,
+                                    fontWeight: FontWeight.w700,
+                                    color: AppColors.secondaryColor)),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                SizedBox(height: getScreenHeight() * 0.02),
+                                TextField(
+                                    controller: latitudeTextController,
+                                    keyboardType:
+                                        const TextInputType.numberWithOptions(),
+                                    onChanged: (text) {
+                                      if (double.tryParse(text) != null) {
+                                        if (double.parse(text) < -90 ||
+                                            double.parse(text) > 90) {
+                                          showSnackBar(context,
+                                              'Latitude should be between -90 and 90');
+                                        } else {
+                                          setState(() {
+                                            globalVariable.latitude =
+                                                double.parse(text);
+                                          });
+                                        }
+                                      } else {
+                                        showSnackBar(context, 'Invalid Input');
+                                      }
+                                    },
+                                    decoration: InputDecoration(
+                                      enabledBorder: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(12.0),
+                                          borderSide: const BorderSide(
+                                              color: Colors.white)),
+                                      counterText: "",
+                                      contentPadding: EdgeInsets.symmetric(
+                                          vertical: getScreenHeight() * 0.0225,
+                                          horizontal: getScreenWidth() * 0.02),
+                                      fillColor: const Color.fromARGB(
+                                          255, 255, 255, 255),
+                                      filled: true,
+                                      // border: OutlineInputBorder(),
+                                      hintText: 'Enter latitude',
+                                    )),
+                                SizedBox(height: getScreenHeight() * 0.02),
+                                TextField(
+                                    controller: longitudeTextController,
+                                    keyboardType:
+                                        const TextInputType.numberWithOptions(),
+                                    onChanged: (text) {
+                                      if (double.tryParse(text) != null) {
+                                        if (double.parse(text) < -180 ||
+                                            double.parse(text) > 180) {
+                                          print("error true!");
+                                          showSnackBar(context,
+                                              'Longitude should be between -180 and 180');
+                                        } else {
+                                          setState(() {
+                                            globalVariable.longitude =
+                                                double.parse(text);
+                                          });
+                                        }
+                                      } else {
+                                        showSnackBar(context, 'Invalid Input');
+                                      }
+                                    },
+                                    decoration: InputDecoration(
+                                      enabledBorder: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(12.0),
+                                          borderSide: const BorderSide(
+                                              color: Colors.white)),
+                                      counterText: "",
+                                      contentPadding: EdgeInsets.symmetric(
+                                          vertical: getScreenHeight() * 0.0225,
+                                          horizontal: getScreenWidth() * 0.02),
+                                      fillColor: const Color.fromARGB(
+                                          255, 255, 255, 255),
+                                      filled: true,
+                                      // border: OutlineInputBorder(),
+                                      hintText: 'Enter longitude',
+                                    )),
+                              ],
+                            ),
+                            const SizedBox(height: 32),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                CustomButton(
+                                    width: 102,
+                                    height: 46,
+                                    buttonColor: AppColors.secondaryColor,
+                                    buttonText: 'Cancel',
+                                    textColor: AppColors.primaryColor,
+                                    onTapped: () async {
+                                      Navigator.pop(context);
+                                    },
+                                    setBorderRadius: true),
+                                const SizedBox(width: 4),
+                                CustomButton(
+                                    width: 102,
+                                    height: 46,
+                                    buttonColor: AppColors.secondaryColor,
+                                    buttonText: 'Save',
+                                    textColor: AppColors.primaryColor,
+                                    onTapped: () {
+                                      double newLatitude = double.parse(
+                                          latitudeTextController.text);
+                                      double newLongitude = double.parse(
+                                          longitudeTextController.text);
+                                      if (latitudeTextController.text
+                                              .trim()
+                                              .isNotEmpty &&
+                                          longitudeTextController.text
+                                              .trim()
+                                              .isNotEmpty) {
+                                        if (newLatitude > -90 &&
+                                            newLatitude < 90 &&
+                                            newLongitude > -180 &&
+                                            newLongitude < 180) {
+                                          setState(() {
+                                            globalVariable.latitude =
+                                                double.parse(
+                                                    latitudeTextController
+                                                        .text);
+                                            globalVariable.longitude =
+                                                double.parse(
+                                                    longitudeTextController
+                                                        .text);
+                                          });
+                                          Navigator.pop(context);
+                                            globalVariable.mapController.move(
+                                                lat_long.LatLng(
+                                                    globalVariable.latitude,
+                                                    globalVariable.longitude),
+                                                globalVariable.mapZoom);
+                                        } else {
+                                          showSnackBar(
+                                              context, 'Invalid Coordinates');
+                                        }
                                       } else {
                                         showSnackBar(
                                             context, 'Text cannot be empty');
@@ -167,7 +348,6 @@ class _MapPickScreenState extends State<MapPickScreen> {
         builder: (dialogContext) {
           return StatefulBuilder(builder: (context, setState) {
             return const Dialog(
-              backgroundColor: Colors.grey,
               child: CustomLoading(),
             );
           });
@@ -188,22 +368,34 @@ class _MapPickScreenState extends State<MapPickScreen> {
         ),
         actions: [
           PopupMenuButton<String>(
+            color: AppColors.secondaryColor,
             onSelected: (value) {
               if (value == 'edit_coordinates') {
-                print('Add Data selected');
+                setState(() {
+                  showCoordinatesDialog();
+                });
               } else if (value == 'use_current_loc') {
-                print('Edit Coordinates selected');
+                setState(() {
+                  latitudeTextController.text = globalVariable.myLocationLat.toString();
+                  longitudeTextController.text = globalVariable.myLocationLong.toString();
+                  globalVariable.latitude = globalVariable.myLocationLat;
+                  globalVariable.longitude = globalVariable.myLocationLong;
+                  globalVariable.mapController.move(
+                      lat_long.LatLng(
+                          globalVariable.latitude, globalVariable.longitude),
+                      globalVariable.mapZoom);
+                });
               }
             },
             itemBuilder: (BuildContext context) {
               return [
                 const PopupMenuItem(
                   value: 'edit_coordinates',
-                  child: Text('Edit Coordinates'),
+                  child: YellowOnBlackText(text: 'Edit Coordinates'),
                 ),
                 const PopupMenuItem(
                   value: 'use_current_loc',
-                  child: Text('Use My Current Location'),
+                  child: YellowOnBlackText(text: 'Use My Current Location'),
                 ),
               ];
             },

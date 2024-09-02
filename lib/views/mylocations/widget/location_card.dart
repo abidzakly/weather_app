@@ -46,7 +46,7 @@ class LocationCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       YellowOnBlackText(text: locationName),
-                      Image.asset(AppAssets.pinpointYellow, height: 20, width: 20)
+                      Image.asset(isCurrentLocation ? AppAssets.pinpointYellow : AppAssets.pinpointBlack, height: 20, width: 20)
                     ],
                   ),
                   Row(

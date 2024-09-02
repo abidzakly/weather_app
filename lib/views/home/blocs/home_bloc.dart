@@ -42,6 +42,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           Position? pos = await weatherRepository?.getCurrentPosition();
           globalVariable.latitude = pos!.latitude;
           globalVariable.longitude = pos.longitude;
+          globalVariable.myLocationLat = pos.latitude;
+          globalVariable.myLocationLong = pos.longitude;
 
           emit(state.copyWith(
               latitude: pos.latitude,

@@ -97,7 +97,10 @@ class _MyLocationState extends State<MyLocationsScreen> {
                                       db.loadData();
                                       db.myLocations.removeAt(index);
                                         db.updateDatabase();
-                                        Navigator.pop(context);
+                                        setState(() {
+                                        db.loadData();
+                                      });
+                                      Navigator.pop(context);
                                       },
                                     setBorderRadius: true),
                               ],
@@ -141,7 +144,7 @@ class _MyLocationState extends State<MyLocationsScreen> {
                         db.myLocations[index].weatherModel.weather[0].main,
                     isCurrentLocation:
                         double.parse(db.myLocations[index].latitude) ==
-                            globalVariable.latitude,
+                            globalVariable.myLocationLat,
                     weatherIcon:
                         db.myLocations[index].weatherModel.weather[0].icon),
               );
