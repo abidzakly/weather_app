@@ -22,8 +22,13 @@ class OnErrorWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Center(
-      child: Text("Unknown Error."),
+    return Center(
+      child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12.0),
+          child: const Text(
+            "Unexpected Error.\nCheck your internet connection and try again.\n(Pull to Refresh)",
+            textAlign: TextAlign.center,
+          )),
     );
   }
 }

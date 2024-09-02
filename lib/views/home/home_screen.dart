@@ -4,7 +4,10 @@ import 'package:weather_app/appdata/app_assets.dart';
 import 'package:weather_app/appdata/app_colors.dart';
 import 'package:weather_app/appdata/global_functions.dart';
 import 'package:weather_app/appdata/global_widget.dart';
+import 'package:weather_app/appdata/my_shared_preferences.dart';
 import 'package:weather_app/blocs/bloc_status.dart';
+import 'package:weather_app/network/models/forecasts/forecast_model.dart';
+import 'package:weather_app/network/models/weather/weather_model.dart';
 import 'package:weather_app/views/home/blocs/home_bloc.dart';
 import 'package:weather_app/views/home/blocs/home_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -12,6 +15,7 @@ import 'package:weather_app/views/forecast/forecasts_screen.dart';
 import 'package:weather_app/views/home/widgets/home_forecast_list.dart';
 import 'package:weather_app/views/home/widgets/home_main_status_card.dart';
 import 'package:weather_app/views/mylocations/my_locations_screen.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 import 'blocs/home_event.dart';
 
@@ -37,7 +41,7 @@ class HomeScreen extends StatelessWidget {
                 context.read<HomeBloc>().add(HomeRefreshedEvent());
               },
               child: SingleChildScrollView(
-                physics: const AlwaysScrollableScrollPhysics(),
+                  physics: const AlwaysScrollableScrollPhysics(),
                   padding: const EdgeInsets.all(18.0),
                   child: Center(
                     child: Container(
@@ -70,10 +74,10 @@ class HomeScreen extends StatelessWidget {
                                             Card(
                                               color: AppColors.secondaryColor,
                                               child: Padding(
-                                                  padding:
-                                                      const EdgeInsets.symmetric(
-                                                          vertical: 12,
-                                                          horizontal: 16),
+                                                  padding: const EdgeInsets
+                                                      .symmetric(
+                                                      vertical: 12,
+                                                      horizontal: 16),
                                                   child: Text(
                                                     state.currentDate,
                                                     style: const TextStyle(
@@ -91,18 +95,24 @@ class HomeScreen extends StatelessWidget {
                                               MainAxisAlignment.center,
                                           children: [
                                             Text(
-                                              state.weatherModel!.weather[0].main,
+                                              state.weatherModel!.weather[0]
+                                                  .main,
                                               style: const TextStyle(
                                                   fontWeight: FontWeight.normal,
                                                   fontSize: 20),
                                             ),
-                                            state.weatherModel!.weather[0].icon !=
+                                            state.weatherModel!.weather[0]
+                                                        .icon !=
                                                     ""
-                                                ? Image.network(
-                                                    getImgUrl(
-                                                        state.weatherModel!
-                                                            .weather[0].icon,
-                                                        "@4x"),
+                                                ? Image(
+                                                    image:
+                                                        CachedNetworkImageProvider(
+                                                            getImgUrl(
+                                                                state
+                                                                    .weatherModel!
+                                                                    .weather[0]
+                                                                    .icon,
+                                                                "@4x")),
                                                     height: 48,
                                                     width: 48,
                                                   )
@@ -120,9 +130,10 @@ class HomeScreen extends StatelessWidget {
                                               fontWeight: FontWeight.bold),
                                         ),
                                         HomeCard(
-                                            speed: state.weatherModel!.wind.speed,
-                                            humidity:
-                                                state.weatherModel!.main.humidity,
+                                            speed:
+                                                state.weatherModel!.wind.speed,
+                                            humidity: state
+                                                .weatherModel!.main.humidity,
                                             visibility:
                                                 state.weatherModel!.visibility),
                                         Container(
@@ -155,12 +166,7 @@ class HomeScreen extends StatelessWidget {
                                                   onPressed: () =>
                                                       pushToNextScreen(
                                                           context,
-                                                          ForecastsScreen(
-                                                            latitude:
-                                                                state.latitude,
-                                                            longitude:
-                                                                state.longitude,
-                                                          )),
+                                                          const ForecastsScreen()),
                                                   icon: Image.asset(
                                                     AppAssets.longArrowIco,
                                                     width: 68,

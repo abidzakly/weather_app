@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -43,4 +44,16 @@ void pushAndRemoveToNextScreen(BuildContext context, Widget nextScreen) {
     MaterialPageRoute(builder: (context) => nextScreen),
     (route) => false,
   );
+}
+
+Future<bool?> checkInternetConnection() async {
+  try {
+    final result = await InternetAddress.lookup('example.com');
+    if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+      return true;
+    }
+  } on SocketException catch (_) {
+    return false;
+  }
+  return null;
 }

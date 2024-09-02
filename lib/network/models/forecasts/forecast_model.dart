@@ -1,6 +1,4 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:weather_app/network/models/forecasts/day_averages.dart';
-import 'package:weather_app/network/models/forecasts/night_averages.dart';
 
 import 'forecast.dart';
 

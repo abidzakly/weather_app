@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
+import 'package:cached_network_image/cached_network_image.dart';
 import '../../../appdata/app_assets.dart';
 import '../../../appdata/app_colors.dart';
 import '../../../appdata/global_functions.dart';
@@ -38,11 +38,12 @@ class HomeForecastCard extends StatelessWidget {
                   style: const TextStyle(fontSize: 20),
                 ),
                 weatherIcon != ""
-                    ? Image.network(
-                        getImgUrl(weatherIcon, ""),
-                        height: 52,
-                        width: 52,
-                      )
+                    ? Image(
+                  image: CachedNetworkImageProvider(
+                      getImgUrl(weatherIcon, "")),
+                  height: 52,
+                  width: 52,
+                )
                     : Image.asset(
                         AppAssets.brokenImageIco,
                         width: 52,

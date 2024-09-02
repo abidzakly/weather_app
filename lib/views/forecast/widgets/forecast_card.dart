@@ -1,16 +1,16 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
+import 'package:cached_network_image/cached_network_image.dart';
 import '../../../appdata/app_assets.dart';
 import '../../../appdata/global_functions.dart';
 
 class ForecastCard extends StatelessWidget {
   const ForecastCard(
       {super.key,
-        required this.dateText,
-        required this.temp,
-        required this.weatherCondition,
-        this.weatherIcon = ""});
+      required this.dateText,
+      required this.temp,
+      required this.weatherCondition,
+      this.weatherIcon = ""});
 
   final String dateText;
   final String temp;
@@ -32,16 +32,17 @@ class ForecastCard extends StatelessWidget {
                 children: [
                   Text(weatherCondition),
                   weatherIcon != ""
-                      ? Image.network(
-                    getImgUrl(weatherIcon, ""),
-                    height: 24,
-                    width: 24,
-                  )
+                      ? Image(
+                          image: CachedNetworkImageProvider(
+                              getImgUrl(weatherIcon, "")),
+                          height: 24,
+                          width: 24,
+                        )
                       : Image.asset(
-                    AppAssets.brokenImageIco,
-                    height: 24,
-                    width: 24,
-                  ),
+                          AppAssets.brokenImageIco,
+                          height: 24,
+                          width: 24,
+                        ),
                 ],
               )
             ],

@@ -14,10 +14,8 @@ import '../home/blocs/home_event.dart';
 import 'blocs/forecast_state.dart';
 
 class ForecastsScreen extends StatelessWidget {
-  const ForecastsScreen({super.key, required this.latitude, required this.longitude});
-
-  final double latitude;
-  final double longitude;
+  const ForecastsScreen(
+      {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +24,8 @@ class ForecastsScreen extends StatelessWidget {
         body:
             BlocBuilder<ForecastBloc, ForecastState>(builder: (context, state) {
           if (state.appStatus == const InitialStatus()) {
-            context.read<ForecastBloc>().add(ForecastInitialEvent(latitude: latitude, longitude: longitude));
+            context.read<ForecastBloc>().add(
+                ForecastInitialEvent());
           }
 
           return RefreshIndicator(

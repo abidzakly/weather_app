@@ -1,8 +1,9 @@
 import 'dart:async';
-
 import 'package:bloc/bloc.dart';
+import 'package:weather_app/appdata/my_shared_preferences.dart';
 import 'package:weather_app/blocs/bloc_status.dart';
 import 'package:weather_app/network/models/forecasts/forecast_model.dart';
+import 'package:weather_app/network/models/saved_state_data.dart';
 import 'package:weather_app/network/models/weather/weather_model.dart';
 import 'package:geolocator/geolocator.dart';
 import '../../../network/weather_repository.dart';
@@ -20,39 +21,62 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   }
 
   Future mapEventToState(HomeEvent event, Emitter<HomeState> emit) async {
-    if (event is HomeRefreshedEvent) {
-      emit(state.copyWith(appStatus: IsLoading()));
-      try {
-        Position? pos = await weatherRepository?.getCurrentPosition();
-        print("latlong in HomeBloc: ${pos!.latitude}, ${pos.longitude}");
-
+    emit(state.copyWith(appStatus: IsLoading()));
+    if (event is HomeGetWeatherEvent || event is HomeRefreshedEvent) {
+      bool? changesOnDayTime = await MySharedPreferences().getChangedDayTime();
+      if (event is HomeGetWeatherEvent &&
+          await MySharedPreferences().getSavedStateData() != null) {
+        SavedStateData? savedData =
+            await MySharedPreferences().getSavedStateData();
         emit(state.copyWith(
-            latitude: pos!.latitude,
-            longitude: pos.longitude,
-            appStatus: IsLoading()));
-
-        WeatherModel? weatherData =
-            await weatherRepository?.getCurrentLocationWeather(
-                latitude: state.latitude.toString(),
-                longitude: state.longitude.toString());
-
-        ForecastModel? forecastsModel =
-            await weatherRepository?.getFiveDaysForecasts(
-                latitude: state.latitude.toString(),
-                longitude: state.longitude.toString());
-
-        emit(state.copyWith(
-            weatherModel: weatherData,
-            forecastsModel: forecastsModel,
-            currentDate: dtToReadable(weatherData!.dt),
+            weatherModel: savedData!.weatherData,
+            forecastsModel: savedData.forecastData,
+            isDayTime: changesOnDayTime ?? savedData.isDayTime,
+            currentDate: savedData.currentDate,
             appStatus: const IsSuccess()));
-      } catch (e) {
-        emit(state.copyWith(appStatus: IsFailed(exception: e)));
+
+      } else if (await checkInternetConnection() == false) {
+        emit(state.copyWith(appStatus: IsFailed()));
+      } else {
+        try {
+          Position? pos = await weatherRepository?.getCurrentPosition();
+
+          emit(state.copyWith(
+              latitude: pos!.latitude,
+              longitude: pos.longitude,
+              appStatus: IsLoading()));
+
+          WeatherModel? weatherData =
+              await weatherRepository?.getCurrentLocationWeather(
+                  latitude: state.latitude.toString(),
+                  longitude: state.longitude.toString());
+
+          ForecastModel? forecastsModel =
+              await weatherRepository?.getFiveDaysForecasts(
+                  latitude: state.latitude.toString(),
+                  longitude: state.longitude.toString());
+          emit(state.copyWith(
+              weatherModel: weatherData,
+              forecastsModel: forecastsModel,
+              currentDate: dtToReadable(weatherData!.dt),
+              appStatus: const IsSuccess()));
+          MySharedPreferences().saveCurrentData(
+              stateData: SavedStateData(
+                  weatherData: weatherData,
+                  forecastData: forecastsModel!,
+                  isDayTime: state.isDayTime,
+                  currentDate: state.currentDate));
+        } catch (e) {
+          emit(state.copyWith(appStatus: IsFailed(exception: e)));
+          print(e);
+        }
       }
     }
 
     if (event is HomeIsDayTimeChangedEvent) {
-      emit(state.copyWith(isDayTime: event.isDaytime));
+      emit(state.copyWith(
+          isDayTime: event.isDaytime, appStatus: const IsSuccess()));
+      MySharedPreferences().saveChangedDayTime(isDayTime: event.isDaytime!);
     }
   }
 }
