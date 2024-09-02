@@ -10,7 +10,7 @@ import 'package:dio/dio.dart';
 class WeatherRepository {
   final ApiService _service = ApiService();
 
-  Future<WeatherModel?> getCurrentLocationWeather(
+  Future<WeatherModel?> getCurrentWeather(
       {required String latitude, required String longitude}) async {
     final response = await _service.dio.get(
         "/weather?lat=$latitude&lon=$longitude&units=metric&appid=${_service

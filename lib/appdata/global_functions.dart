@@ -57,3 +57,15 @@ Future<bool?> checkInternetConnection() async {
   }
   return null;
 }
+
+bool isDaytime() {
+  // Get the current time in the user's local timezone
+  DateTime now = DateTime.now();
+
+  // Define the start and end times for daytime
+  DateTime startDayTime = DateTime(now.year, now.month, now.day, 6, 0); // 6:00 AM
+  DateTime endDayTime = DateTime(now.year, now.month, now.day, 18, 0);  // 6:00 PM
+
+  // Check if the current time is between the start and end times
+  return now.isAfter(startDayTime) && now.isBefore(endDayTime);
+}

@@ -55,6 +55,22 @@ class HomeScreen extends StatelessWidget {
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                         Row(
+                                          mainAxisAlignment: MainAxisAlignment.start,
+                                          crossAxisAlignment: CrossAxisAlignment.center,
+                                          children: [
+                                            IconButton(
+                                                onPressed: () => pushToNextScreen(
+                                                    context,
+                                                    MyLocationsScreen(
+                                                        weatherData:
+                                                            state.weatherModel!)),
+                                                icon: Image.asset(
+                                                    AppAssets.plusRoundedIco,
+                                                    height: 24,
+                                                    width: 24)),
+                                          ],
+                                        ),
+                                        Row(
                                           crossAxisAlignment:
                                               CrossAxisAlignment.center,
                                           mainAxisAlignment:
@@ -164,8 +180,7 @@ class HomeScreen extends StatelessWidget {
                                                   ]),
                                               IconButton(
                                                   onPressed: () =>
-                                                      pushToNextScreen(
-                                                          context,
+                                                      pushToNextScreen(context,
                                                           const ForecastsScreen()),
                                                   icon: Image.asset(
                                                     AppAssets.longArrowIco,

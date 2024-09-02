@@ -7,6 +7,8 @@ class AppAssets {
   static const String brokenImageIco = 'assets/brokenImage.png';
   static const String dayTimeIco = 'assets/dayTime.png';
   static const String nightTimeIco = 'assets/nightTime.png';
+  static const String pinpointBlack = 'assets/pinpointBlack.png';
+  static const String pinpointYellow = 'assets/pinpointYellow.png';
 
   AppAssets._();
 }

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:bloc/bloc.dart';
+import 'package:weather_app/appdata/global_variables.dart';
 import 'package:weather_app/appdata/my_shared_preferences.dart';
 import 'package:weather_app/blocs/bloc_status.dart';
 import 'package:weather_app/network/models/forecasts/forecast_model.dart';
@@ -21,7 +22,6 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   }
 
   Future mapEventToState(HomeEvent event, Emitter<HomeState> emit) async {
-    emit(state.copyWith(appStatus: IsLoading()));
     if (event is HomeGetWeatherEvent || event is HomeRefreshedEvent) {
       bool? changesOnDayTime = await MySharedPreferences().getChangedDayTime();
       if (event is HomeGetWeatherEvent &&
@@ -34,23 +34,24 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
             isDayTime: changesOnDayTime ?? savedData.isDayTime,
             currentDate: savedData.currentDate,
             appStatus: const IsSuccess()));
-
       } else if (await checkInternetConnection() == false) {
         emit(state.copyWith(appStatus: IsFailed()));
       } else {
+        emit(state.copyWith(appStatus: IsLoading()));
         try {
           Position? pos = await weatherRepository?.getCurrentPosition();
+          globalVariable.latitude = pos!.latitude;
+          globalVariable.longitude = pos.longitude;
 
           emit(state.copyWith(
-              latitude: pos!.latitude,
+              latitude: pos.latitude,
               longitude: pos.longitude,
               appStatus: IsLoading()));
 
           WeatherModel? weatherData =
-              await weatherRepository?.getCurrentLocationWeather(
+              await weatherRepository?.getCurrentWeather(
                   latitude: state.latitude.toString(),
                   longitude: state.longitude.toString());
-
           ForecastModel? forecastsModel =
               await weatherRepository?.getFiveDaysForecasts(
                   latitude: state.latitude.toString(),
