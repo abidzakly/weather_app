@@ -18,15 +18,18 @@ class CustomLoading extends StatelessWidget {
 }
 
 class OnErrorWidget extends StatelessWidget {
-  const OnErrorWidget({super.key});
+  const OnErrorWidget({super.key, this.message});
+
+  final String? message;
 
   @override
   Widget build(BuildContext context) {
     return Center(
       child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 12.0),
-          child: const Text(
-            "Unexpected Error.\nCheck your internet connection and try again.\n(Pull to Refresh)",
+          child: Text(
+            message ??
+                "Unexpected Error.\nCheck your internet connection and try again.\n(Pull to Refresh)",
             textAlign: TextAlign.center,
           )),
     );
@@ -46,7 +49,7 @@ class SingleScrollViewCustomized extends StatelessWidget {
       child: Center(
         child: Container(
           alignment: Alignment.center,
-          height: MediaQuery.of(context).size.height,
+          // height: MediaQuery.of(context).size.height,
           child: child,
         ),
       ),
@@ -55,7 +58,8 @@ class SingleScrollViewCustomized extends StatelessWidget {
 }
 
 class YellowOnBlackText extends StatelessWidget {
-  const YellowOnBlackText({super.key, required this.text, this.fontSize, this.fontWeight});
+  const YellowOnBlackText(
+      {super.key, required this.text, this.fontSize, this.fontWeight});
 
   final String text;
   final double? fontSize;
@@ -63,6 +67,10 @@ class YellowOnBlackText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(text, style: TextStyle(color: AppColors.primaryColor, fontSize: fontSize ?? 14, fontWeight: fontWeight ?? FontWeight.normal));
+    return Text(text,
+        style: TextStyle(
+            color: AppColors.primaryColor,
+            fontSize: fontSize ?? 14,
+            fontWeight: fontWeight ?? FontWeight.normal));
   }
 }

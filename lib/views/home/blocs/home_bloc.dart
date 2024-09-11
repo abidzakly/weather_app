@@ -70,8 +70,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
                   isDayTime: state.isDayTime,
                   currentDate: state.currentDate));
         } catch (e) {
-          emit(state.copyWith(appStatus: IsFailed(exception: e)));
-          print(e);
+          emit(state.copyWith(appStatus: IsFailed(exception: e), errorMsg: e.toString()));
+          print('exception in home bloc: $e');
         }
       }
     }

@@ -196,7 +196,7 @@ class HomeScreen extends StatelessWidget {
                                           isDayTime: state.isDayTime,
                                         )
                                       ])
-                                : const OnErrorWidget()),
+                                : OnErrorWidget(message: '${state.errorMsg}\n(Pull to Refresh)')),
                   )));
         },
       ),

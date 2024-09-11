@@ -10,6 +10,7 @@ class HomeState extends Equatable {
       this.latitude = 0.0,
       this.longitude = 0.0,
       this.currentDate = "",
+      this.errorMsg = "",
       this.isDayTime = true,
       this.appStatus = const InitialStatus()});
 
@@ -19,22 +20,26 @@ class HomeState extends Equatable {
   final double longitude;
   final AppStatus appStatus;
   final String currentDate;
+  final String? errorMsg;
   final bool isDayTime;
 
-  HomeState copyWith(
-      {WeatherModel? weatherModel,
-      ForecastModel? forecastsModel,
-      double? latitude,
-      double? longitude,
-      String? currentDate,
-      bool? isDayTime,
-      AppStatus? appStatus}) {
+  HomeState copyWith({
+    WeatherModel? weatherModel,
+    ForecastModel? forecastsModel,
+    double? latitude,
+    double? longitude,
+    String? currentDate,
+    bool? isDayTime,
+    AppStatus? appStatus,
+    String? errorMsg,
+  }) {
     return HomeState(
         weatherModel: weatherModel ?? this.weatherModel,
         forecastsModel: forecastsModel ?? this.forecastsModel,
         latitude: latitude ?? this.latitude,
         longitude: longitude ?? this.longitude,
         currentDate: currentDate ?? this.currentDate,
+        errorMsg: errorMsg ?? this.errorMsg,
         isDayTime: isDayTime ?? this.isDayTime,
         appStatus: appStatus ?? this.appStatus);
   }
@@ -47,6 +52,7 @@ class HomeState extends Equatable {
         longitude,
         currentDate,
         isDayTime,
-        appStatus
+        appStatus,
+        errorMsg
       ];
 }

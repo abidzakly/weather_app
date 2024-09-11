@@ -39,7 +39,7 @@ class WeatherRepository {
 
       // Send the data to the second API
       final response = await _service.dio.post(
-        "https://7b11-139-228-117-86.ngrok-free.app/weather/averages",
+        "https://8fe9-139-228-117-86.ngrok-free.app/weather/averages",
         data: dataToSend,
         options: Options(
           headers: {"Content-Type": "application/json"},
@@ -81,14 +81,14 @@ class WeatherRepository {
         // Android's shouldShowRequestPermissionRationale
         // returned true. According to Android guidelines
         // your App should show an explanatory UI now.
-        return Future.error('Location permissions are denied');
+        return Future.error('Location permissions are denied. You may change location settings in app info.');
       }
     }
 
     if (permission == LocationPermission.deniedForever) {
       // Permissions are denied forever, handle appropriately.
       return Future.error(
-          'Location permissions are permanently denied, we cannot request permissions.');
+          'Location permissions are permanently denied, we cannot request permissions. You may change location settings in app info.');
     }
 
     // When we reach here, permissions are granted and we can

@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:weather_app/appdata/global_variables.dart';
+import 'package:weather_app/appdata/global_widget.dart';
 import 'package:weather_app/network/models/weather/weather_model.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:weather_app/views/map/map_pick_screen.dart';
@@ -37,10 +38,10 @@ class _MyLocationState extends State<MyLocationsScreen> {
               longitude: globalVariable.longitude.toString(),
               weatherModel: widget.weatherData));
     } else {
+    super.initState();
       db.loadData();
     }
 
-    super.initState();
   }
 
   void _onRefresh() {
@@ -48,6 +49,7 @@ class _MyLocationState extends State<MyLocationsScreen> {
       db.loadData();
     });
   }
+
   void showConfirmDialog(int index) {
     final formKey = GlobalKey<FormState>();
     if (mounted) {
@@ -64,7 +66,7 @@ class _MyLocationState extends State<MyLocationsScreen> {
                             horizontal: 30, vertical: 24),
                         child: SingleChildScrollView(
                           child:
-                          Column(mainAxisSize: MainAxisSize.min, children: [
+                              Column(mainAxisSize: MainAxisSize.min, children: [
                             SizedBox(height: getScreenHeight() * 0.015),
                             const Text('Delete Location?',
                                 style: TextStyle(
@@ -93,15 +95,15 @@ class _MyLocationState extends State<MyLocationsScreen> {
                                     buttonColor: AppColors.secondaryColor,
                                     buttonText: 'Delete',
                                     textColor: AppColors.primaryColor,
-                                    onTapped: () async {
+                                    onTapped: () {
                                       db.loadData();
-                                      db.myLocations.removeAt(index);
+                                      setState(() {
+                                        db.myLocations.removeAt(index);
                                         db.updateDatabase();
-                                        setState(() {
-                                        db.loadData();
                                       });
+                                      db.loadData();
                                       Navigator.pop(context);
-                                      },
+                                    },
                                     setBorderRadius: true),
                               ],
                             ),
@@ -113,6 +115,7 @@ class _MyLocationState extends State<MyLocationsScreen> {
           });
     }
   }
+
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
@@ -127,30 +130,39 @@ class _MyLocationState extends State<MyLocationsScreen> {
           ),
         ),
         body: RefreshIndicator(
-          backgroundColor: AppColors.secondaryColor,
-          color: AppColors.primaryColor,
-          onRefresh: () async => _onRefresh(),
-          child: ListView.builder(
-            itemCount: db.myLocations.length,
-            itemBuilder: (context, index) {
-              return Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
-                child: LocationCard(
-                  onTapped: () => showConfirmDialog(index),
-                  title: db.myLocations[index].title,
-                    locationName: db.myLocations[index].weatherModel.name,
-                    temp: db.myLocations[index].weatherModel.main.temp,
-                    weatherCondition:
-                        db.myLocations[index].weatherModel.weather[0].main,
-                    isCurrentLocation:
-                        double.parse(db.myLocations[index].latitude) ==
-                            globalVariable.myLocationLat,
-                    weatherIcon:
-                        db.myLocations[index].weatherModel.weather[0].icon),
-              );
-            },
-          ),
-        ),
+            backgroundColor: AppColors.secondaryColor,
+            color: AppColors.primaryColor,
+            onRefresh: () async => _onRefresh(),
+            child: db.myLocations.isNotEmpty
+                ? ListView.builder(
+                    itemCount: db.myLocations.length,
+                    itemBuilder: (context, index) {
+                      return Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16.0, vertical: 4.0),
+                        child: LocationCard(
+                            onTapped: () {
+                              showConfirmDialog(index);
+                            },
+                            title: db.myLocations[index].title,
+                            locationName:
+                                db.myLocations[index].weatherModel.name,
+                            temp: db.myLocations[index].weatherModel.main.temp,
+                            weatherCondition: db.myLocations[index].weatherModel
+                                .weather[0].main,
+                            isCurrentLocation:
+                                double.parse(db.myLocations[index].latitude) ==
+                                    globalVariable.myLocationLat,
+                            weatherIcon: db.myLocations[index].weatherModel
+                                .weather[0].icon),
+                      );
+                    },
+                  )
+                : const SingleScrollViewCustomized(
+                    child: Text(
+                        "List is Empty.\nYou can add a data into the list\nby pressing the Floating Action Button!",
+                        textAlign: TextAlign.center),
+                  )),
         floatingActionButton: FloatingActionButton(
           backgroundColor: AppColors.secondaryColor,
           foregroundColor: AppColors.primaryColor,

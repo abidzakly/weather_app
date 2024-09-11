@@ -40,6 +40,8 @@ class _MapPickScreenState extends State<MapPickScreen> {
 
   void initializeMapPosition() async {
     Position? pos = await repo.getCurrentPosition();
+    print('pos: ${pos}');
+    print('pos: ${await repo.getCurrentPosition()}');
     globalVariable.latitude = pos.latitude;
     globalVariable.longitude = pos.longitude;
 
@@ -237,7 +239,6 @@ class _MapPickScreenState extends State<MapPickScreen> {
                                       if (double.tryParse(text) != null) {
                                         if (double.parse(text) < -180 ||
                                             double.parse(text) > 180) {
-                                          print("error true!");
                                           showSnackBar(context,
                                               'Longitude should be between -180 and 180');
                                         } else {
@@ -305,22 +306,14 @@ class _MapPickScreenState extends State<MapPickScreen> {
                                             newLatitude < 90 &&
                                             newLongitude > -180 &&
                                             newLongitude < 180) {
-                                          setState(() {
-                                            globalVariable.latitude =
-                                                double.parse(
-                                                    latitudeTextController
-                                                        .text);
-                                            globalVariable.longitude =
-                                                double.parse(
-                                                    longitudeTextController
-                                                        .text);
-                                          });
                                           Navigator.pop(context);
+                                          setState(() {
                                             globalVariable.mapController.move(
                                                 lat_long.LatLng(
                                                     globalVariable.latitude,
                                                     globalVariable.longitude),
                                                 globalVariable.mapZoom);
+                                          });
                                         } else {
                                           showSnackBar(
                                               context, 'Invalid Coordinates');
