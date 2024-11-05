@@ -1,3 +1,5 @@
+# Note: Add .env file in the root project and place 'API_KEY' with your own from https://home.openweathermap.org/api_keys
+
 # weather_app
 
 A new Flutter project.
